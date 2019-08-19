@@ -4,7 +4,12 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"
+	"math/rand"
+	"strconv"
+
+	//"math/rand"
 	"net/http"
+	//"strconv"
 )
 
 // Book Model
@@ -39,6 +44,19 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(Book{})
 }
 func createBook(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	_ = r.ParseForm()
+	var book Book = Book{
+		ID:    strconv.Itoa(rand.Intn(100000000)),
+		Isbn:  r.FormValue("isbn"),
+		Title: r.FormValue("title"),
+		Author: Author{
+			Firstname: r.FormValue("author[firstname]"),
+			Lastname:  r.FormValue("author[lastname]"),
+		},
+	}
+	books = append(books, book)
+	_ = json.NewEncoder(w).Encode(book)
 
 }
 func updateBook(w http.ResponseWriter, r *http.Request) {
